@@ -14,3 +14,5 @@ Se tomo como base la guía https://developer.amazon.com/en-US/docs/alexa/smartho
 
 Fue de gran ayuda: https://www.youtube.com/watch?v=ppaTbaz8DpI
 con la guia: https://github.com/alexa/alexa-smarthome/wiki/Build-a-Working-Smart-Home-Skill-in-15-Minutes
+
+ 
