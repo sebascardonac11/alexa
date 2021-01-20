@@ -4,14 +4,44 @@
  * session persistence, api calls, and more.
  * */
 const Alexa = require('ask-sdk-core');
+// i18n library dependency, we use it below in a localisation interceptor
+const i18n = require('i18next');
 
+/* *
+ * We create a language strings object containing all of our strings.
+ * The keys for each string will then be referenced in our code, e.g. handlerInput.t('WELCOME_MSG')
+ * Later we'll move these string to a separate file to avoid polluting index.js 
+ * */
+const languageStrings = {
+    en: {
+        translation: {
+            WELCOME_MSG: 'Welcome, you can say Hello or Help. Which would you like to try?',
+            HELLO_MSG: 'Hello World sebas!',
+            HELP_MSG: 'You can say hello to me! How can I help?',
+            GOODBYE_MSG: 'Goodbye!',
+            REFLECTOR_MSG: 'You just triggered {{intent}}',
+            FALLBACK_MSG: 'Sorry, I don\'t know about that. Please try again.',
+            ERROR_MSG: 'Sorry, there was an error. Please try again.'
+        }
+    },
+    es: {
+        translation: {
+            WELCOME_MSG: 'Bienvenido, puedes decir Hola o Ayuda. Cual prefieres?',
+            HELLO_MSG: 'Hola Mundo Sebastian!',
+            HELP_MSG: 'Puedes decirme hola. Cómo te puedo ayudar?',
+            GOODBYE_MSG: 'Hasta luego!',
+            REFLECTOR_MSG: 'Acabas de activar {{intent}}',
+            FALLBACK_MSG: 'Lo siento, no se nada sobre eso. Por favor inténtalo otra vez.',
+            ERROR_MSG: 'Lo siento, ha habido un error. Por favor inténtalo otra vez.'
+        }
+    }
+}
 const LaunchRequestHandler = {
     canHandle(handlerInput) {
         return Alexa.getRequestType(handlerInput.requestEnvelope) === 'LaunchRequest';
     },
     handle(handlerInput) {
-        const speakOutput = 'Welcome, you can say Hello or Help. Which would you like to try?';
-
+        const speakOutput = handlerInput.t('WELCOME_MSG');
         return handlerInput.responseBuilder
             .speak(speakOutput)
             .reprompt(speakOutput)
@@ -25,8 +55,7 @@ const HelloWorldIntentHandler = {
             && Alexa.getIntentName(handlerInput.requestEnvelope) === 'HelloWorldIntent';
     },
     handle(handlerInput) {
-        const speakOutput = 'Hello World Sebastian!';
-
+        const speakOutput = handlerInput.t('HELLO_MSG');
         return handlerInput.responseBuilder
             .speak(speakOutput)
             //.reprompt('add a reprompt if you want to keep the session open for the user to respond')
@@ -40,8 +69,7 @@ const HelpIntentHandler = {
             && Alexa.getIntentName(handlerInput.requestEnvelope) === 'AMAZON.HelpIntent';
     },
     handle(handlerInput) {
-        const speakOutput = 'You can say hello to me! How can I help?';
-
+        const speakOutput = handlerInput.t('HELP_MSG');
         return handlerInput.responseBuilder
             .speak(speakOutput)
             .reprompt(speakOutput)
@@ -56,8 +84,7 @@ const CancelAndStopIntentHandler = {
                 || Alexa.getIntentName(handlerInput.requestEnvelope) === 'AMAZON.StopIntent');
     },
     handle(handlerInput) {
-        const speakOutput = 'Goodbye!';
-
+        const speakOutput =handlerInput.t('GOODBYE_MSG');
         return handlerInput.responseBuilder
             .speak(speakOutput)
             .getResponse();
@@ -74,8 +101,7 @@ const FallbackIntentHandler = {
             && Alexa.getIntentName(handlerInput.requestEnvelope) === 'AMAZON.FallbackIntent';
     },
     handle(handlerInput) {
-        const speakOutput = 'Sorry, I don\'t know about that. Please try again.';
-
+        const speakOutput = handlerInput.t('FALLBACK_MSG');
         return handlerInput.responseBuilder
             .speak(speakOutput)
             .reprompt(speakOutput)
@@ -126,13 +152,39 @@ const ErrorHandler = {
         return true;
     },
     handle(handlerInput, error) {
-        const speakOutput = 'Sorry, I had trouble doing what you asked. Please try again.';
+        const speakOutput  = handlerInput.t('ERROR_MSG');
         console.log(`~~~~ Error handled: ${JSON.stringify(error)}`);
 
         return handlerInput.responseBuilder
             .speak(speakOutput)
             .reprompt(speakOutput)
             .getResponse();
+    }
+};
+
+// This request interceptor will log all incoming requests to this lambda
+const LoggingRequestInterceptor = {
+    process(handlerInput) {
+        console.log(`Incoming request: ${JSON.stringify(handlerInput.requestEnvelope)}`);
+    }
+};
+
+// This response interceptor will log all outgoing responses of this lambda
+const LoggingResponseInterceptor = {
+    process(handlerInput, response) {
+        console.log(`Outgoing response: ${JSON.stringify(response)}`);
+    }
+};
+
+// This request interceptor will bind a translation function 't' to the handlerInput
+const LocalisationRequestInterceptor = {
+    process(handlerInput) {
+        i18n.init({
+            lng: Alexa.getLocale(handlerInput.requestEnvelope),
+            resources: languageStrings
+        }).then((t) => {
+            handlerInput.t = (...args) => t(...args);
+        });
     }
 };
 
@@ -152,5 +204,10 @@ exports.handler = Alexa.SkillBuilders.custom()
         IntentReflectorHandler)
     .addErrorHandlers(
         ErrorHandler)
+    .addRequestInterceptors(
+        LocalisationRequestInterceptor,
+        LoggingRequestInterceptor)
+    .addResponseInterceptors(
+        LoggingResponseInterceptor)
     .withCustomUserAgent('sample/hello-world/v1.2')
     .lambda();
