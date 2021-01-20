@@ -1,9 +1,9 @@
-alexa
+# alexa
 Ejercicios para aprender a usar alexa
 
 Consola de alexa: https://developer.amazon.com/alexa/ Link para el OAuth2 de AWS: https://developer.amazon.com/ Consola de AWS: https://console.aws.amazon.com/
 
-myCelphoneCharge
+<h2> myCelphoneCharge </h2>
 La carpeta de myCelphoneCharge pretende crear un skill que prenda el toma mientras se carga el cel y se apague cuando este 100% cargado.
 
 El tipo de Skill es: Smart Home Skill. Se tomo como base la guía https://developer.amazon.com/en-US/docs/alexa/smarthome/steps-to-build-a-smart-home-skill.html
