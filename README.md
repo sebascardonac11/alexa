@@ -9,3 +9,8 @@ La carpeta de myCelphoneCharge pretende crear un skill que prenda el toma mientr
 El tipo de Skill es: Smart Home Skill. Se tomo como base la guía https://developer.amazon.com/en-US/docs/alexa/smarthome/steps-to-build-a-smart-home-skill.html
 
 Fue de gran ayuda: https://www.youtube.com/watch?v=ppaTbaz8DpI con la guia: https://github.com/alexa/alexa-smarthome/wiki/Build-a-Working-Smart-Home-Skill-in-15-Minutes
+
+<h2> Hello World </h2>
+Primeras pruebas de entender el mundo de alexa, ejercicio tomado de Alexa Developer.
+
+https://www.youtube.com/watch?v=mqIk4-Ry-cg
