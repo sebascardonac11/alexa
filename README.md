@@ -5,7 +5,7 @@ Consola de alexa: https://developer.amazon.com/alexa/
 Link para el OAuth2 de AWS: https://developer.amazon.com/
 Consola de AWS: https://console.aws.amazon.com/
 
-myCelphoneCharge
+# myCelphoneCharge
 
 La carpeta de myCelphoneCharge pretende crear un skill que prenda el toma mientras se carga el cel y se apague cuando este 100% cargado.
 
